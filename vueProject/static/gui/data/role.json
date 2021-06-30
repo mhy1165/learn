@@ -1,0 +1,18 @@
+﻿[
+	{
+		"name":"风控经理",
+		"value":1,
+		"list":[
+					{"name":"赵1","value":11},
+					{"name":"赵2","value":12}
+			   ]
+	},
+	{
+		"name":"业务经理",
+		"value":2,
+		"list":[
+					{"name":"李4","value":13},
+					{"name":"李5","value":14}
+			   ]
+	}
+]

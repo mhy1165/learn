@@ -1,0 +1,500 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<link type="text/css"
+	href="lib/jquery-ui-1.8.4.custom/css/smoothness/jquery-ui-1.8.4.custom.css"
+	rel="stylesheet" />
+
+
+<script type="text/javascript" src="lib/raphael-min.js"></script>
+<script type="text/javascript"
+	src="lib/jquery-ui-1.8.4.custom/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript"
+	src="lib/jquery-ui-1.8.4.custom/js/jquery-ui-1.8.4.custom.min.js"></script>
+<script type="text/javascript" src="linkage.js?t=1"></script>
+<script type="text/javascript" src="myflow.js?t=13"></script>
+<script type="text/javascript" src="myflow.editors.js"></script>
+<script type="text/javascript" src="myflow.jpdl4.js"></script>
+<script type="text/javascript">
+    var createUserId=getQueryVariable("createUserId");
+    var createUserName=decodeURIComponent(getQueryVariable("createUserName"));
+    var token=decodeURIComponent(getQueryVariable("token"));
+    var localURL = decodeURIComponent(getQueryVariable("localURL"));
+    function saveFunc(data){
+        var protocalMustParams = {
+                                appid: "wt1",
+                                charset: "utf-8",
+                                baseParam: {
+                                    userCode: "test"
+                                }
+                            }
+                            var json = '' + data;
+                            console.log("createUserName:"+createUserName);
+                            $.ajax({
+                                type: "POST",
+                                // url: saveUrl,
+                                beforeSend:function(request){
+                                    request.setRequestHeader("Auth-User-Token",token);
+                                    },
+                                url:localURL+'/api/biz/flowNode/doSaveNode',
+                                data:{
+                                    "data": json,
+                                    "createUserId": createUserId,
+                                    "createUserName": createUserName,
+                                    // "protocalMustParams": JSON.stringify(protocalMustParams),
+                                },
+                                success: function(data) {
+                                    console.log(data);
+                                    if (data != null && data.retHead.code=='0000000') {
+                                        
+                                        alert("保存成功！");
+                                    }else{
+                                        alert(data.retHead.message);
+                                    }
+                                    // if (data != null && data != "undefined") {
+                                    //     data = ((typeof data === 'string') ? eval('(' + data + ')') : data);
+                                    // alert("保存成功！");
+                                    // }
+                                },
+                                error: function() {
+                                    alert("保存失败！");
+                                }
+                            });
+    }
+
+
+	$(function() {
+       
+        var flowId = getQueryVariable("id");
+        var url = getQueryVariable("baseURL");
+            webUrl = decodeURIComponent(url);
+            roleUrl = webUrl + "/wf/gui/role/all";
+            userUrl = webUrl + "/wf/gui/user/all";
+            saveUrl = webUrl + "/wf/gui/save";
+            delUrl = webUrl + "/wf/gui/rect/delete";
+            delPathUrl = webUrl + "/wf/gui/path/delete";
+            conditionUrl = webUrl + "/wf/gui/condition/all";
+            taskUrl = webUrl + "/wf/gui/task/all";
+            codeUrl = webUrl + "/wf/gui/code/all";
+            innerUserUrl = webUrl + "wf/gui/user/inner";
+            organUrl = webUrl + "/wf/gui/organ/all";
+            if (flowId != null && flowId != "" && flowId != "0") {
+                flowUrl = webUrl + "/wf/gui/template?id=" + flowId;
+            }
+
+		$('#myflow').myflow(
+						{
+							basePath : "",
+							location :  flowUrl,
+							tools : {
+								save : {
+									onclick : saveFunc
+								}
+							}
+						});
+
+
+
+	/* 	var _w = $(window).width(), _h = $(window).height();
+		$('body').css('height',_h);
+		$('#myflow').css('height',_h*3); */
+
+	});
+
+	 function hide(el){
+          var currentTable = $(el).parent().next();
+          if(currentTable.attr("id") == "_table"){
+            $("#_table1").toggle();
+            $("#_table1").prev().find("#j1").toggleClass("hidden");
+            $("#_table1").prev().find("#j2").toggleClass("hidden");
+          }else{
+            $("#_table").toggle();
+            $("#_table").prev().find("#j1").toggleClass("hidden");
+            $("#_table").prev().find("#j2").toggleClass("hidden");
+          }
+          currentTable.toggle();
+		  $(el).find("#j1").toggleClass("hidden");
+		  $(el).find("#j2").toggleClass("hidden");
+		  };
+
+	 function ret(){
+		 window.location.href = "goWorkflowTemplateMain.action";
+	 }
+
+	 function design(){
+	     $('#myflow_save').click();
+     }
+
+
+     function workflowImport(fileString){
+        $('#myflow').myflow(
+                            {
+                                basePath : "",
+                                restore :  fileString,
+                                tools : {
+                                    save : {
+                                        onclick : saveFunc
+                                    }
+                                }
+                            }
+                            );	
+     }
+
+     function workflowExport(){
+        window.location.href = webUrl + "/wf/workflowTemplate/export?id=" + getQueryVariable("id");
+     }
+
+</script>
+<style type="text/css">
+body {
+    overflow-y:scroll;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	font-family: Arial, sans-serif, Helvetica, Tahoma;
+	font-size: 12px;
+	line-height: 1.5;
+	color: black;
+	font-family: 微软雅黑;
+   /* background-image: url(img/bg.png); */
+}
+
+#myflow{
+      background-image: url(img/bg.png);
+}
+
+.node {
+     width: 100px;
+	/* text-align: center; */
+	 vertical-align: middle;
+	/* border: 1px solid #fff; */
+	 height: 32px;
+    line-height: 32px;
+    border: 1px solid #ddd;
+        margin-top: 5px;
+    border-radius: 4px;
+}
+
+.mover {
+	border: 1px solid #ddd;
+	background-color: #ddd;
+}
+
+.selected {
+	background-color: #ddd;
+}
+
+#myflow_props .editor {
+	border:1px solid #ddd;
+	    border-radius: 4px;
+
+  }
+
+
+#myflow_props th {
+	letter-spacing: 2px;
+	text-align: left;
+	line-height: 14px;
+	font-weight: normal;
+	    font-size: 12px;
+	    width: 60px;
+    padding-left: 6px;
+}
+
+#myflow_props td {
+	background: #fff;
+     padding-right:6px;
+}
+#myflow_props td input {
+	height:22px;
+	line-height:22px;
+    width: 100px;
+	border:none;
+    border-radius: 4px;
+        font-size: 12px;
+}
+#myflow_props td select {
+	height:24px;
+    width: 100px;
+	line-height:24px;
+	border:none;
+	border-radius: 4px;
+	    font-size: 12px;
+}
+
+
+#pointer {
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#path {
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#task {
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#state {
+	background-repeat: no-repeat;
+	background-position: center;
+}
+#myflow_save{
+    /*  background-color:#20a0ff;*/
+    background-color:#03a9f4;
+    text-align:center;color:#fff;
+    cursor:pointer;
+}
+  .jh_header { position: fixed;
+                /*   top: 30;
+                  right: 50; */
+                  background-color: #fff;
+                  width: 350px;
+                  padding: 3px;
+                  border-radius: 8px;
+                }
+  #_table{
+      border-collapse:separate;
+      border-spacing:0 8px;
+     /* padding-left:6px;*/
+  }
+  #_table1{
+      border-collapse:separate;
+      border-spacing:0 8px;
+     /* padding-left:6px;*/
+  }
+  #del{
+    cursor: pointer;
+    text-align: center;
+    background-color: #e74c3c;
+    padding: 3px;
+    border-radius: 4px;
+    color: #fff;
+    border: 1px solid #fb6155;
+    letter-spacing: 3px;
+  }
+  #msg{
+    cursor: pointer;
+    text-align: center;
+    background-color: #f5a64cda;
+    padding: 3px;
+    border-radius: 4px;
+    color: #fff;
+    border: 1px solid #f5972be3;
+    letter-spacing: 3px;
+  }
+   .im{
+        width:36px;
+        height:100%;
+        float:left;
+   }
+  .im img{
+      width:24px;
+      padding-top: 3px;
+      padding-left: 5px;
+  }
+  .font{
+     float:left;
+  }
+  .jiantou{
+       position: relative;
+       top: -15px;
+    /* right: 80px; */
+    left: 325px;
+  }
+     .jiantou img{
+        width:12px;
+     }
+     .hidden{
+       display:none;
+     }
+
+    .btn_baocun{
+         border-radius: 3px;
+         background: #03a9f4;
+         color: #fff;
+         cursor: pointer;
+         text-align: center;
+         vertical-align: middle;
+         width: auto;
+         line-height: 30px;
+         height: 30px;
+         border: none;
+         margin: 0px 4px;
+         padding: 0 10px;
+         }
+     .btn_fanhui{
+             border-radius: 3px;
+         background: #e5e9f2;
+         color: #777;
+         cursor: pointer;
+         text-align: center;
+         vertical-align: middle;
+         width: auto;
+         line-height: 30px;
+         height: 30px;
+         border: none;
+         margin: 0px 4px;
+         padding: 0 10px;
+          }
+        .addr{
+            font-weight: bold;
+            font-size: 14px;
+            float: left;
+            height: 50px;
+            line-height: 50px;
+        }
+        .btn{
+           float:right;
+           padding:10px;
+           height:30px;
+        }
+</style>
+</head>
+<body>
+
+
+ <div style="width:100%;height:50px;border-bottom:1px solid #ddd;display:none;">
+      <div class="addr"></div>
+      <div class="btn">
+             <button id="myflow_save" type="button" onclick=save(); class="btn_baocun" title="保存" >保存</button>
+             <button type="button" onclick=ret(); class="btn_fanhui" title="返回" >返回</button>
+      </div>
+ </div>
+
+
+
+<div id="myflow_tools"
+	style="position: fixed; top: 10; left: 10; background-color: #fff; width: 100px; cursor: default; padding: 3px;border-radius: 8px;"
+	class="ui-widget-content">
+<div id="myflow_tools_handle" class="ui-widget-header">工具集</div>
+
+<!-- <div>
+<hr />
+</div> -->
+
+<!-- <div>
+<hr />
+</div> -->
+<div class="node state"  id="start" type="start">
+    <div class="im"><img src="img/16/go.png" /></div><div class="font">&nbsp;开始</div>
+</div>
+<div class="node state" id="task" type="task">
+    <div class="im"><img src="img/16/com.png" /></div><div class="font">&nbsp;手动任务</div>
+</div>
+<div class="node state" id="state" type="state">
+     <div class="im"><img src="img/16/auto.png" /></div><div class="font">&nbsp;自动任务</div>
+</div>
+<div class="node state" id="sub" type="sub">
+    <div class="im"><img src="img/16/xuan.png" /></div><div class="font">&nbsp;子流程</div>
+</div>
+<div class="node state" id="end" type="end">
+	<div class="im"><img src="img/16/end.png" /></div><div class="font">&nbsp;结束</div>
+</div>
+<!-- <div class="node state" id="fork" type="fork"><img
+	src="img/16/gateway_parallel.png" />&nbsp;&nbsp;分支</div>
+<div class="node state" id="join" type="join"><img
+	src="img/16/gateway_parallel.png" />&nbsp;&nbsp;合并</div> -->
+
+<!-- <div class="node state" id="end-cancel" type="end-cancel"><img
+	src="img/16/end_event_cancel.png" />&nbsp;&nbsp;取消</div>
+<div class="node state" id="end-error" type="end-error"><img
+	src="img/16/end_event_error.png" />&nbsp;&nbsp;错误</div> -->
+
+	<div class="node selectable" id="pointer">
+	    <div class="im"><img src="img/16/xuan1.png" /></div><div class="font">&nbsp;选择</div>
+	</div>
+  <div class="node selectable" id="path">
+    	 <div class="im"><img src="img/16/jian.png" /></div><div class="font">&nbsp;转换</div>
+ </div>
+
+	<!--<div class="node" id="myflow_save" style="">
+        	 <img src="img/save.gif" />&nbsp;&nbsp;
+	          保存
+	</div> -->
+
+</div>
+
+
+
+<div id="myflow_props" class="ui-widget-content jh_header" >
+
+        <div id="myflow_props_handle" class="ui-widget-header" style="height:30px">
+            <div style="margin-top:5px">节点信息</div>
+             <div id="banner" class="jiantou" onclick="hide(this);">
+                    <img id="j1" src="img/16/sanjiao2.png" />
+                    <img id="j2" class="hidden" src="img/16/sanjiao1.png" />
+             </div>
+        </div>
+        <table id="_table" width="100%" cellpadding="0" cellspacing="0">
+	         <tr>
+		        <td>aaa</td>
+	         </tr>
+        </table>
+        <div id="ext-info"  class="ui-widget-header" style="height:30px; display: none;">
+            <div style="margin-top:5px">扩展信息</div>
+             <div id="banner1" class="jiantou" onclick="hide(this);">
+                    <img id="j1" class="hidden" src="img/16/sanjiao2.png" />
+                    <img id="j2"  src="img/16/sanjiao1.png" />
+             </div>
+        </div>
+        <table id="_table1" style="display: none;" width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+               <td>aaa</td>
+            </tr>
+       </table>
+</div>
+
+<div id="myflow"></div>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
