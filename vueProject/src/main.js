@@ -11,7 +11,7 @@ import ElementUI from 'element-ui'; //引入elemenui
 Vue.use(ElementUI)
 import '../static/element-ui/index.css'; // 引入elementui样式
 // import 'element-ui/lib/theme-chalk/index.css';
-import api from './data/api' // 引入axios,注意无法再其他组件中使用
+import api from './data/api.js' // 引入axios,注意无法再其他组件中使用
 Vue.prototype.$api = api;
 
 import {baseURL} from './config';
@@ -27,13 +27,13 @@ const data = dataFiles.keys().reduce((data, modulePath) => {
   data[moduleName] = value.default
   return data
 }, {})
-
+Vue.prototype.$apiData = data;
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
-  // store,
+  store,
   components: { App },
   template: '<App/>'
 })

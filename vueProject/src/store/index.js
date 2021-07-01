@@ -1,7 +1,9 @@
 
 //本地数据持久化插件 并将缓存数据加密
 import createPersistedState from "vuex-persistedstate"
-
+import Vue from "vue"
+import Vuex from 'vuex'
+Vue.use(Vuex)
 export default new Vuex.Store({
     state:{
         // routers:{},
