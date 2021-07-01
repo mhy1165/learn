@@ -4,6 +4,8 @@
     <h2>Essential Links</h2>
     <ul>
       <li>
+        <router-link to="/Mainpage">首页</router-link>
+        <router-view></router-view>
         <a
           href="https://vuejs.org"
           target="_blank"
