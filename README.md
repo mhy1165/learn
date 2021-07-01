@@ -1,3 +1,2 @@
 # learn
-It's a test project for  Vue project.
-It contains  Element-UI .....
+It's a learning project for  Vue project with ElementUI.
