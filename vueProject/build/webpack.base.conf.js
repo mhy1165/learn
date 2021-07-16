@@ -1,3 +1,8 @@
+/*
+ * @Author: mhy
+ * @LastEditors: mhy
+ * @Description: 
+ */
 'use strict'
 const path = require('path')
 const utils = require('./utils')
@@ -64,7 +69,11 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
-      }
+      },
+      { // 引入scss
+        test: / \.scss$ / ,
+        loaders: [ 'style' , 'css' , 'sass' ]
+        }
     ]
   },
   node: {
